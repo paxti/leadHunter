@@ -55,9 +55,6 @@ public class DBManager {
         ObjectReader jsonReader = mapper.readerFor(Show.class);
 
         JSONObject objectToSave = new JSONObject(mapper.valueToTree(showEntry).toString());
-
-        Log.v("JSON Object", objectToSave.toString());
-
         JSONObject savedObject = smartStore.create(ShowObject.SHOW_SOUP, objectToSave);
         return (Show) jsonReader.readValue(savedObject.toString());
     }
