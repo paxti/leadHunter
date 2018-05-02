@@ -14,17 +14,20 @@ import java.util.Date;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Show implements Serializable {
 
-    @JsonProperty(SmartStore.SOUP_ENTRY_ID)
-    private Long entyId;
-
     @JsonProperty(Constants.ID)
     private String id;
+
+    @JsonProperty(SmartStore.SOUP_ENTRY_ID)
+    private Long entyId;
 
     @JsonProperty(ShowObject.CITY)
     private String city;
 
-    @JsonProperty(ShowObject.CONVENTION_CENTER_NAME)
-    private String conventionCenter;
+    @JsonProperty(ShowObject.ATTRIBUTES)
+    private Attribute attribute;
+
+    @JsonProperty(ShowObject.RELATED_CONVENTION_CENTER)
+    private ConventionCenter conventionCenter;
 
     @JsonProperty(ShowObject.START_DATE)
     @JsonFormat(locale = "en", shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "GMT" )
@@ -61,8 +64,12 @@ public class Show implements Serializable {
         this.city = city;
     }
 
-    public void setConventionCenter(String conventionCenter) {
+    public void setConventionCenter(ConventionCenter conventionCenter) {
         this.conventionCenter = conventionCenter;
+    }
+
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 
     public void setStartDate(Date startDate) {
@@ -105,8 +112,12 @@ public class Show implements Serializable {
         return city;
     }
 
-    public String getConventionCenter() {
+    public ConventionCenter getConventionCenter() {
         return conventionCenter;
+    }
+
+    public Attribute getAttribute() {
+        return attribute;
     }
 
     public Date getStartDate() {

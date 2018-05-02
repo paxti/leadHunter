@@ -35,7 +35,7 @@ public class CardWrapperAdapter extends RecyclerView.Adapter<CardWrapperAdapter.
     public void onBindViewHolder(ShowViewHolder showViewHolder, int i) {
         showViewHolder.showName.setText(shows.get(i).getCity());
         showViewHolder.showDates.setText(shows.get(i).getShowDates());
-        showViewHolder.venue.setText(shows.get(i).getConventionCenter());
+        showViewHolder.venue.setText(shows.get(i).getConventionCenter().getName());
     }
 
     @Override

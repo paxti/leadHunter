@@ -23,8 +23,10 @@ public class ShowObject extends SalesforceObject {
     public static final String RELATED_CONVENTION_CENTER = "Convention_Center__r";
     public static final String CONVENTION_CENTER_NAME = "Name";
 
-    public static final String OBJECT_TYPE_KEY = "type";
     public static final String ATTRIBUTES = "attributes";
+    public static final String ATTRIBUTES_TYPE = "type";
+    public static final String ATTRIBUTES_URL = "url";
+
     public static final String LOCAL = "__local__";
     public static final String LOCALY_CREATED = "__locally_created__";
     public static final String LOCALY_UPDATED = "__locally_updated__";
