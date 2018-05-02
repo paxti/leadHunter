@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="account_type">com.gateway.lead_hunter.login</string>
-	<string name="app_name"><b>LeadHunter</b></string>
-	<string name="app_package">com.gateway.lead_hunter</string>
+    <string name="app_name"><b>LeadHunter</b></string>
+    <string name="app_package">com.gateway.lead_hunter</string>
     <string name="welcome">Welcome %s</string>
-	<string name="logout_button">Logout</string>
-	<string name="fetch_contacts_button">Fetch Contacts</string>
-	<string name="fetch_accounts_button">Fetch Accounts</string>
-	<string name="clear_button">Clear</string>
+    <string name="logout_button">Logout</string>
+    <string name="fetch_contacts_button">Fetch Contacts</string>
+    <string name="fetch_accounts_button">Fetch Accounts</string>
+    <string name="clear_button">Clear</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 </resources>
