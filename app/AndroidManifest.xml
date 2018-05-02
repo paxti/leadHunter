@@ -115,6 +115,10 @@
             android:name=".Leads"
             android:label="@string/title_activity_leads"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NewLeadActivity"
+            android:label="@string/title_activity_new_lead"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
