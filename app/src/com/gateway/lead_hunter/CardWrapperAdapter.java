@@ -1,5 +1,6 @@
 package com.gateway.lead_hunter;
 
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,12 +50,21 @@ public class CardWrapperAdapter extends RecyclerView.Adapter<CardWrapperAdapter.
         TextView showDates;
         TextView venue;
 
-        ShowViewHolder(View itemView) {
+        ShowViewHolder(final View itemView) {
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.cv);
             showName = (TextView)itemView.findViewById(R.id.show_name);
             venue = (TextView)itemView.findViewById(R.id.venue);
             showDates = (TextView)itemView.findViewById(R.id.show_dates);
+
+            cv.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    Intent intent = new Intent(itemView.getContext(), Leads.class);
+//                    String message = editText.getText().toString();
+//                    intent.putExtra(EXTRA_MESSAGE, message);
+                    itemView.getContext().startActivity(intent);
+                }
+            });
         }
     }
 

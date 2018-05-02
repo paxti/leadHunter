@@ -111,6 +111,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Leads"
+            android:label="@string/title_activity_leads"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
