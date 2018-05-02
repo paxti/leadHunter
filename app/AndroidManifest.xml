@@ -21,6 +21,8 @@
 			</intent-filter>
 		</activity>
 
+		<service android:name=".services.ShowsSyncService"/>
+
         <!-- Login activity -->
         <!--
             Launch mode of "singleInstance" ensures that the activity isn't restarted
