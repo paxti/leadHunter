@@ -19,8 +19,8 @@
     <string name="title_activity_test">Test</string>
     <string name="title_activity_main3">Main3Activity</string>
     <string name="title_activity_new_lead">NewLeadActivity</string>
-    
-    
+
+
     <string name="form_first_name">First Name</string>
     <string name="form_last_name">Last Name</string>
     <string name="form_company">Company</string>
@@ -28,4 +28,9 @@
     <string name="form_phone">Phone</string>
     <string name="form_notes">Notes</string>
     <string name="form_save">Save</string>
+    <string name="title_activity_edit_lead">EditLeadActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
