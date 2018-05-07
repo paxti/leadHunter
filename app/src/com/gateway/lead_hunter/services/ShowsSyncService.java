@@ -64,7 +64,7 @@ public class ShowsSyncService extends IntentService {
         };
         try {
             final SyncOptions options = SyncOptions.optionsForSyncDown(SyncState.MergeMode.OVERWRITE);
-            final String soqlQuery = SOQLBuilder.getInstanceWithFields(ShowObject.TIME_FIELDS_SYNC_DOWN)
+            final String soqlQuery = SOQLBuilder.getInstanceWithFields(ShowObject.SHOW_FIELDS_SYNC_DOWN)
                     .from(ShowObject.SHOW_SF_OBJECT)
                     .where(ShowObject.buildWhereRequest())
                     .limit(LIMIT).build();

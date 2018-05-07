@@ -49,6 +49,8 @@ public class Show implements Serializable {
     @JsonProperty(ShowObject.LOCALY_DELETED)
     private Boolean locallyDeleted;
 
+    public Show(){}
+
     /**
      * Setters
      */

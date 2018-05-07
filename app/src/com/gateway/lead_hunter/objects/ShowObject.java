@@ -34,21 +34,21 @@ public class ShowObject extends SalesforceObject {
 
     public static final String SHOW_STATUS = "order__r.Status";
 
-    public static IndexSpec[] TIMES_INDEX_SPEC = {
-        new IndexSpec(Constants.ID, SmartStore.Type.string),
-        new IndexSpec(NAME, SmartStore.Type.string),
-        new IndexSpec(RELATED_CONVENTION_CENTER +  "." + CONVENTION_CENTER_NAME, SmartStore.Type.string),
-        new IndexSpec(CITY, SmartStore.Type.string),
-        new IndexSpec(START_DATE, SmartStore.Type.string),
-        new IndexSpec(END_DATE, SmartStore.Type.string),
-        new IndexSpec(LOCAL, SmartStore.Type.string)
+    public static IndexSpec[] SHOWS_INDEX_SPEC = {
+            new IndexSpec(Constants.ID, SmartStore.Type.string),
+            new IndexSpec(NAME, SmartStore.Type.string),
+            new IndexSpec(RELATED_CONVENTION_CENTER +  "." + CONVENTION_CENTER_NAME, SmartStore.Type.string),
+            new IndexSpec(CITY, SmartStore.Type.string),
+            new IndexSpec(START_DATE, SmartStore.Type.string),
+            new IndexSpec(END_DATE, SmartStore.Type.string),
+            new IndexSpec(LOCAL, SmartStore.Type.string)
     };
 
-    public static final String[] TIME_FIELDS_SYNC_UP = { };
+    public static final String[] SHOW_FIELDS_SYNC_UP = { };
 
-    public static final String[] TIME_FIELDS_UPDATE = { };
+    public static final String[] SHOW_FIELDS_UPDATE = { };
 
-    public static final String[] TIME_FIELDS_SYNC_DOWN = {
+    public static final String[] SHOW_FIELDS_SYNC_DOWN = {
             Constants.ID,
             RELATED_CONVENTION_CENTER +  "." + CONVENTION_CENTER_NAME,
             CITY,
