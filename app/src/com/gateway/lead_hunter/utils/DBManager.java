@@ -8,7 +8,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.gateway.lead_hunter.objects.LeadObject;
 import com.gateway.lead_hunter.objects.ShowObject;
+import com.gateway.lead_hunter.objects.pojo.Lead;
 import com.gateway.lead_hunter.objects.pojo.Show;
 import com.salesforce.androidsdk.accounts.UserAccount;
 import com.salesforce.androidsdk.smartstore.store.QuerySpec;
@@ -75,11 +77,46 @@ public class DBManager {
         return  shows;
     }
 
+    public List<Lead> getAllLeads() throws JSONException, IOException {
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        ObjectReader jsonReader = mapper.readerFor(Lead.class);
+        JSONArray res = getAllInSoup(LeadObject.LEAD_SOUP);
+        List<Lead> leads = new ArrayList<>();
+
+        for (int i = 0; i < res.length(); i++){
+            leads.add((Lead) jsonReader.readValue(res.getJSONArray(i).getJSONObject(0).toString()));
+        }
+
+        return  leads;
+    }
+
     private JSONArray getAllInSoup(String soup) throws JSONException, IOException {
         String getAllRequest = String.format("SELECT {%1$s:%2$s} FROM {%1$s}",
                 soup,
                 SmartSqlHelper.SOUP);
         return smartStore.query(QuerySpec.buildSmartQuerySpec(getAllRequest, PAGE_SIZE), 0);
+    }
+
+    public Lead saveLead(Lead leadEntry) throws JSONException, IOException {
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        ObjectReader jsonReader = mapper.readerFor(Lead.class);
+
+        JSONObject objectToSave = new JSONObject(mapper.valueToTree(leadEntry).toString());
+        JSONObject savedObject = smartStore.create(LeadObject.LEAD_SOUP, objectToSave);
+        return (Lead) jsonReader.readValue(savedObject.toString());
+    }
+
+    public Lead createLead(String firstName, String lastName,
+                           String company, String email,
+                           String phone, String notes) throws JSONException, IOException{
+
+        Lead newEntry = new Lead(firstName, lastName, email, company, phone, notes);
+        return saveLead(newEntry);
     }
 
 }
