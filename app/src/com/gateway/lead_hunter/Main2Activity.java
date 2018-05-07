@@ -2,12 +2,9 @@ package com.gateway.lead_hunter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,7 +20,6 @@ import com.gateway.lead_hunter.utils.DBManager;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.List;
 
 public class Main2Activity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -37,6 +33,9 @@ public class Main2Activity extends AppCompatActivity
         setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -77,9 +76,9 @@ public class Main2Activity extends AppCompatActivity
     }
 
     private void initializeAdapter(){
-        CardWrapperAdapter adapter = null;
+        ShowsWrapperAdapter adapter = null;
         try {
-            adapter = new CardWrapperAdapter(DBManager.getInstance().getAllShows());
+            adapter = new ShowsWrapperAdapter(DBManager.getInstance().getAllShows());
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -142,6 +141,12 @@ public class Main2Activity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
         return true;
     }
 }
