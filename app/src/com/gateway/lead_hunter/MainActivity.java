@@ -1,159 +1,154 @@
-/*
- * Copyright (c) 2012-present, salesforce.com, inc.
- * All rights reserved.
- * Redistribution and use of this software in source and binary forms, with or
- * without modification, are permitted provided that the following conditions
- * are met:
- * - Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- * - Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * - Neither the name of salesforce.com, inc. nor the names of its contributors
- * may be used to endorse or promote products derived from this software without
- * specific prior written permission of salesforce.com, inc.
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
 package com.gateway.lead_hunter;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import com.salesforce.androidsdk.app.SalesforceSDKManager;
-import com.salesforce.androidsdk.rest.ApiVersionStrings;
-import com.salesforce.androidsdk.rest.RestClient;
-import com.salesforce.androidsdk.rest.RestClient.AsyncRequestCallback;
-import com.salesforce.androidsdk.rest.RestRequest;
-import com.salesforce.androidsdk.rest.RestResponse;
-import com.salesforce.androidsdk.ui.SalesforceActivity;
+import com.gateway.lead_hunter.services.ShowsSyncService;
+import com.gateway.lead_hunter.utils.DBManager;
 
-import org.json.JSONArray;
+import org.json.JSONException;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.io.IOException;
 
-/**
- * Main activity
- */
-public class MainActivity extends SalesforceActivity {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    private RestClient client;
-    private ArrayAdapter<String> listAdapter;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
-		// Setup view
-		setContentView(R.layout.main);
-	}
-	
-	@Override 
-	public void onResume() {
-		// Hide everything until we are logged in
-		findViewById(R.id.root).setVisibility(View.INVISIBLE);
+    @BindView(R.id.cardWrapper) RecyclerView cardWrapper;
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
 
-		// Create list adapter
-		listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>());
-		((ListView) findViewById(R.id.contacts_list)).setAdapter(listAdapter);				
-		
-		super.onResume();
-	}		
-	
-	@Override
-	public void onResume(RestClient client) {
-        // Keeping reference to rest client
-        this.client = client; 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-		// Show everything
-		findViewById(R.id.root).setVisibility(View.VISIBLE);
-	}
+        ButterKnife.bind(this);
 
-	/**
-	 * Called when "Logout" button is clicked. 
-	 * 
-	 * @param v
-	 */
-	public void onLogoutClick(View v) {
-		SalesforceSDKManager.getInstance().logout(this);
-	}
-	
-	/**
-	 * Called when "Clear" button is clicked. 
-	 * 
-	 * @param v
-	 */
-	public void onClearClick(View v) {
-		listAdapter.clear();
-	}	
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-	/**
-	 * Called when "Fetch Contacts" button is clicked
-	 * 
-	 * @param v
-	 * @throws UnsupportedEncodingException 
-	 */
-	public void onFetchContactsClick(View v) throws UnsupportedEncodingException {
-        sendRequest("SELECT Name FROM Contact");
-	}
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-	/**
-	 * Called when "Fetch Accounts" button is clicked
-	 * 
-	 * @param v
-	 * @throws UnsupportedEncodingException 
-	 */
-	public void onFetchAccountsClick(View v) throws UnsupportedEncodingException {
-		sendRequest("SELECT Name FROM Account");
-	}	
-	
-	private void sendRequest(String soql) throws UnsupportedEncodingException {
-		RestRequest restRequest = RestRequest.getRequestForQuery(ApiVersionStrings.getVersionNumber(this), soql);
+        setTitle(R.string.app_name);
 
-		client.sendAsync(restRequest, new AsyncRequestCallback() {
-			@Override
-			public void onSuccess(RestRequest request, final RestResponse result) {
-				result.consumeQuietly(); // consume before going back to main thread
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							listAdapter.clear();
-							JSONArray records = result.asJSONObject().getJSONArray("records");
-							for (int i = 0; i < records.length(); i++) {
-								listAdapter.add(records.getJSONObject(i).getString("Name"));
-							}
-						} catch (Exception e) {
-							onError(e);
-						}
-					}
-				});
-			}
-			
-			@Override
-			public void onError(final Exception exception) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						Toast.makeText(MainActivity.this,
-								MainActivity.this.getString(SalesforceSDKManager.getInstance().getSalesforceR().stringGenericError(), exception.toString()),
-								Toast.LENGTH_LONG).show();
-					}
-				});
-			}
-		});
-	}
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Intent mServiceIntent = new Intent(getApplicationContext(), ShowsSyncService.class);
+                getApplicationContext().startService(mServiceIntent);
+                initializeAdapter();
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
+        cardWrapper.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        cardWrapper.setLayoutManager(llm);
+
+        initializeAdapter();
+    }
+
+    private void initializeAdapter(){
+        ShowsWrapperAdapter adapter = null;
+        try {
+            adapter = new ShowsWrapperAdapter(DBManager.getInstance().getAllShows());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cardWrapper.setAdapter(adapter);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main2, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camera) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }
