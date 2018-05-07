@@ -27,4 +27,5 @@
     <string name="form_email">Email address</string>
     <string name="form_phone">Phone</string>
     <string name="form_notes">Notes</string>
+    <string name="form_save">Save</string>
 </resources>
