@@ -35,4 +35,5 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="lead_fragment_placeholder">Lead view</string>
+    <string name="gallery_fragment_placeholder">Gallery fragment</string>
 </resources>
