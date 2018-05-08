@@ -17,6 +17,7 @@ import com.salesforce.androidsdk.smartstore.store.QuerySpec;
 import com.salesforce.androidsdk.smartstore.store.SmartSqlHelper;
 import com.salesforce.androidsdk.smartstore.store.SmartStore;
 import com.salesforce.androidsdk.smartsync.app.SmartSyncSDKManager;
+import com.salesforce.androidsdk.smartsync.util.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,6 +76,31 @@ public class DBManager {
         }
 
         return  shows;
+    }
+
+    public List<Lead> getAllLeadsForShow(String showEntryId) throws JSONException, IOException {
+
+        QuerySpec queryLeadsByShow = QuerySpec.buildExactQuerySpec(LeadObject.LEAD_SOUP,
+                LeadObject.SHOW_ENTRY_ID,
+                showEntryId,
+                SmartStore.SOUP_LAST_MODIFIED_DATE ,
+                QuerySpec.Order.descending,
+                1000);
+
+
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        ObjectReader jsonReader = mapper.readerFor(Lead.class);
+        JSONArray res = smartStore.query(queryLeadsByShow, 0);
+        List<Lead> leads = new ArrayList<>();
+
+        for (int i = 0; i < res.length(); i++){
+            leads.add((Lead) jsonReader.readValue(res.getJSONObject(i).toString()));
+        }
+
+        return  leads;
     }
 
     public List<Lead> getAllLeads() throws JSONException, IOException {

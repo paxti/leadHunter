@@ -82,7 +82,7 @@ public class Leads extends AppCompatActivity {
     private void initializeAdapter(){
         LeadsWrapperAdapter adapter = null;
         try {
-            adapter = new LeadsWrapperAdapter(DBManager.getInstance().getAllLeads(), showEntryId);
+            adapter = new LeadsWrapperAdapter(DBManager.getInstance().getAllLeadsForShow(showEntryId), showEntryId);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
