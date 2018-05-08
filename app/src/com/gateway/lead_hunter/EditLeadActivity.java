@@ -1,8 +1,7 @@
 package com.gateway.lead_hunter;
 
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -19,13 +18,15 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import com.gateway.lead_hunter.fragments.LeadFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EditLeadActivity extends AppCompatActivity {
+public class EditLeadActivity extends AppCompatActivity implements LeadFragment.OnFragmentInteractionListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -67,7 +68,7 @@ public class EditLeadActivity extends AppCompatActivity {
 
     private void setTabs(){
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mSectionsPagerAdapter.addFrag(PlaceholderFragment.newInstance(0), getString(R.string.tab_lead));
+        mSectionsPagerAdapter.addFrag(LeadFragment.newInstance("", ""), getString(R.string.tab_lead));
         mSectionsPagerAdapter.addFrag(PlaceholderFragment.newInstance(1), getString(R.string.tab_photos));
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -95,6 +96,11 @@ public class EditLeadActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     /**
