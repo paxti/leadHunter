@@ -8,10 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.gateway.lead_hunter.objects.pojo.Lead;
 import com.gateway.lead_hunter.objects.pojo.Show;
 
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ShowsWrapperAdapter extends RecyclerView.Adapter<ShowsWrapperAdapter.ShowViewHolder>{
 
@@ -45,28 +48,27 @@ public class ShowsWrapperAdapter extends RecyclerView.Adapter<ShowsWrapperAdapte
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public static class ShowViewHolder extends RecyclerView.ViewHolder {
-        CardView cv;
-        TextView showName;
-        TextView showDates;
-        TextView venue;
+    public class ShowViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.cv) CardView cardView;
+        @BindView(R.id.show_name) TextView showName;
+        @BindView(R.id.venue) TextView venue;
+        @BindView(R.id.show_dates) TextView showDates;
 
         ShowViewHolder(final View itemView) {
             super(itemView);
-            cv = (CardView)itemView.findViewById(R.id.cv);
-            showName = (TextView)itemView.findViewById(R.id.show_name);
-            venue = (TextView)itemView.findViewById(R.id.venue);
-            showDates = (TextView)itemView.findViewById(R.id.show_dates);
-
-            cv.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    Intent intent = new Intent(itemView.getContext(), Leads.class);
-                    String show = showName.getText().toString();
-                    intent.putExtra(Leads.SHOW_NAME, show);
-                    itemView.getContext().startActivity(intent);
-                }
-            });
+            ButterKnife.bind(this, itemView);
         }
+
+        @OnClick(R.id.cv)
+        public void onClick() {
+            Intent intent = new Intent(itemView.getContext(), Leads.class);
+            String showName = shows.get(getAdapterPosition()).getCity();
+            String showId = shows.get(getAdapterPosition()).getId();
+            intent.putExtra(Leads.SHOW_NAME, showName);
+            intent.putExtra(Leads.SHOW_ENTRY_ID, showId);
+            itemView.getContext().startActivity(intent);
+        }
+
     }
 
 }

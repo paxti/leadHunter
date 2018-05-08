@@ -15,6 +15,7 @@ public class LeadObject extends SalesforceObject {
 
     public static final String LEAD_SOUP = "Leads";
 
+    public static final String SHOW_ENTRY_ID = "ShowEntryId";
     public static final String FIRST_NAME = "FirstName";
     public static final String LAST_NAME = "LastName";
     public static final String EMAIL = "Email";
@@ -34,6 +35,7 @@ public class LeadObject extends SalesforceObject {
 
     public static IndexSpec[] LEAD_INDEX_SPEC = {
             new IndexSpec(Constants.ID, SmartStore.Type.string),
+            new IndexSpec(SHOW_ENTRY_ID, SmartStore.Type.string),
             new IndexSpec(FIRST_NAME, SmartStore.Type.string),
             new IndexSpec(LAST_NAME, SmartStore.Type.string),
             new IndexSpec(EMAIL, SmartStore.Type.string),
@@ -81,13 +83,14 @@ public class LeadObject extends SalesforceObject {
                 object.optBoolean(LOCALY_UPDATED);
     }
 
-    public static JSONObject createLead(String firstName, String lastName,
+    public static JSONObject createLead(String showEntryId, String firstName, String lastName,
                                         String email, String company, String phone,
                                         String notes) throws JSONException {
 
         JSONObject object = new JSONObject();
 
         object.put(Constants.ID, String.valueOf(System.currentTimeMillis()));
+        object.put(SHOW_ENTRY_ID, showEntryId);
         object.put(FIRST_NAME, firstName);
         object.put(LAST_NAME, lastName);
         object.put(EMAIL, email);

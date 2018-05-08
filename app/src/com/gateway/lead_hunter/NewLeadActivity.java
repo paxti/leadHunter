@@ -22,6 +22,9 @@ import static java.security.AccessController.getContext;
 
 public class NewLeadActivity extends AppCompatActivity {
 
+    public static final String SHOW_ENTRY_ID = "SHOW_ENTRY_ID";
+
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.first_name_field) EditText firstName;
     @BindView(R.id.last_name_field) EditText lastName;
     @BindView(R.id.company_field) EditText company;
@@ -29,6 +32,9 @@ public class NewLeadActivity extends AppCompatActivity {
     @BindView(R.id.phone_field) EditText phone;
     @BindView(R.id.notes_field) EditText notes;
     @BindView(R.id.save_button_form) Button saveButton;
+    @BindView(R.id.fab) FloatingActionButton fab;
+
+    private String showEntryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,27 +43,25 @@ public class NewLeadActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setToolbar();
+
+        Intent intent = getIntent();
+        showEntryId = intent.getStringExtra(SHOW_ENTRY_ID);
+    }
+
+    private void setToolbar() {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
     }
 
     @OnClick(R.id.save_button_form)
     public void onSaveClick(View view){
         try {
-            DBManager.getInstance().createLead(firstName.getText().toString(),
+            DBManager.getInstance().createLead(
+                    showEntryId,
+                    firstName.getText().toString(),
                     lastName.getText().toString(),
                     company.getText().toString(),
                     email.getText().toString(),

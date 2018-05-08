@@ -9,15 +9,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gateway.lead_hunter.objects.pojo.Lead;
-import com.gateway.lead_hunter.objects.pojo.Show;
 
 import java.util.List;
 
-public class LeadsWrapperAdapter extends RecyclerView.Adapter<LeadsWrapperAdapter.LeadViewHolder> {
-    List<Lead> leads;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-    LeadsWrapperAdapter(List<Lead> leads){
+public class LeadsWrapperAdapter extends RecyclerView.Adapter<LeadsWrapperAdapter.LeadViewHolder> {
+
+    private List<Lead> leads;
+    private String showEntryId;
+
+    LeadsWrapperAdapter(List<Lead> leads, String showEntryId){
         this.leads = leads;
+        this.showEntryId = showEntryId;
     }
 
     @Override
@@ -44,28 +50,23 @@ public class LeadsWrapperAdapter extends RecyclerView.Adapter<LeadsWrapperAdapte
         super.onAttachedToRecyclerView(recyclerView);
     }
 
-    public static class LeadViewHolder extends RecyclerView.ViewHolder {
-        CardView cardView;
-        TextView firstName;
-        TextView lastName;
-        TextView email;
+    public class LeadViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.cv) CardView cardView;
+        @BindView(R.id.first_name) TextView firstName;
+        @BindView(R.id.last_name) TextView lastName;
+        @BindView(R.id.email) TextView email;
 
         LeadViewHolder(final View itemView) {
             super(itemView);
-            cardView = (CardView)itemView.findViewById(R.id.cv);
-            firstName = (TextView)itemView.findViewById(R.id.first_name);
-            lastName = (TextView)itemView.findViewById(R.id.last_name);
-            email = (TextView)itemView.findViewById(R.id.email);
-            /*
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    Intent intent = new Intent(itemView.getContext(), Leads.class);
-//                    String message = editText.getText().toString();
-//                    intent.putExtra(EXTRA_MESSAGE, message);
-                    itemView.getContext().startActivity(intent);
-                }
-            });
-            */
+            ButterKnife.bind(this, itemView);
+        }
+
+        @OnClick(R.id.cv)
+        public void onClick() {
+            Intent intent = new Intent(itemView.getContext(), EditLeadActivity.class);
+            String id = leads.get(getAdapterPosition()).getId();
+            intent.putExtra(EditLeadActivity.SHOW_ENTITY_ID, id);
+            itemView.getContext().startActivity(intent);
         }
     }
 }

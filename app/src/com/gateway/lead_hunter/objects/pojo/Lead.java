@@ -19,6 +19,9 @@ public class Lead {
     @JsonProperty(SmartStore.SOUP_ENTRY_ID)
     private Long entyId;
 
+    @JsonProperty(LeadObject.SHOW_ENTRY_ID)
+    private String showEntryId;
+
     @JsonProperty(LeadObject.FIRST_NAME)
     private String firstName;
 
@@ -51,10 +54,11 @@ public class Lead {
 
     public Lead(){}
 
-    public Lead (String firstName, String lastName,
+    public Lead (String showEntryId, String firstName, String lastName,
                  String email, String company, String phone,
                  String notes) {
 
+        this.showEntryId = showEntryId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.company = company;
@@ -163,5 +167,13 @@ public class Lead {
 
     public void setLocallyDeleted(Boolean locallyDeleted) {
         this.locallyDeleted = locallyDeleted;
+    }
+
+    public String getShowEntryId() {
+        return showEntryId;
+    }
+
+    public void setShowEntryId(String showEntryId) {
+        this.showEntryId = showEntryId;
     }
 }

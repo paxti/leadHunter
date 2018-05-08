@@ -111,11 +111,11 @@ public class DBManager {
         return (Lead) jsonReader.readValue(savedObject.toString());
     }
 
-    public Lead createLead(String firstName, String lastName,
+    public Lead createLead(String showEntryId, String firstName, String lastName,
                            String company, String email,
                            String phone, String notes) throws JSONException, IOException{
 
-        Lead newEntry = new Lead(firstName, lastName, email, company, phone, notes);
+        Lead newEntry = new Lead(showEntryId, firstName, lastName, email, company, phone, notes);
         return saveLead(newEntry);
     }
 

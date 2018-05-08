@@ -2,6 +2,7 @@ package com.gateway.lead_hunter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -17,18 +18,29 @@ import org.json.JSONException;
 
 import java.io.IOException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class Leads extends AppCompatActivity {
 
-    public static String SHOW_NAME = "SHOW_NAME";
+    public static final String SHOW_NAME = "SHOW_NAME";
+    public static final String SHOW_ENTRY_ID = "SHOW_ENTRY_ID";
 
-    private RecyclerView cardWrapper;
-    private SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.swipeContainer) SwipeRefreshLayout swipeContainer;
+    @BindView(R.id.cardWrapper) RecyclerView cardWrapper;
+    @BindView(R.id.fab) FloatingActionButton fab;
+
+    private String showEntryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leads);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -36,19 +48,8 @@ public class Leads extends AppCompatActivity {
 
         Intent intent = getIntent();
         setTitle(intent.getStringExtra(SHOW_NAME));
+        showEntryId = intent.getStringExtra(SHOW_ENTRY_ID);
 
-        android.support.design.widget.FloatingActionButton fab = (android.support.design.widget.FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), NewLeadActivity.class);
-//                    String message = editText.getText().toString();
-//                    intent.putExtra(EXTRA_MESSAGE, message);
-                view.getContext().startActivity(intent);
-            }
-        });
-
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -63,20 +64,25 @@ public class Leads extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
-        cardWrapper = (RecyclerView)findViewById(R.id.cardWrapper);
         cardWrapper.setHasFixedSize(true);
 
         LinearLayoutManager llm = new LinearLayoutManager(this);
         cardWrapper.setLayoutManager(llm);
 
         initializeAdapter();
+    }
 
+    @OnClick(R.id.fab)
+    public void onClick(View view) {
+        Intent intent = new Intent(view.getContext(), NewLeadActivity.class);
+        intent.putExtra(NewLeadActivity.SHOW_ENTRY_ID, showEntryId);
+        view.getContext().startActivity(intent);
     }
 
     private void initializeAdapter(){
         LeadsWrapperAdapter adapter = null;
         try {
-            adapter = new LeadsWrapperAdapter(DBManager.getInstance().getAllLeads());
+            adapter = new LeadsWrapperAdapter(DBManager.getInstance().getAllLeads(), showEntryId);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
