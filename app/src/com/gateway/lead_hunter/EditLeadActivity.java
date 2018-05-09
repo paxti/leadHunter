@@ -1,5 +1,6 @@
 package com.gateway.lead_hunter;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +22,12 @@ import android.widget.TextView;
 
 import com.gateway.lead_hunter.fragments.GalleryFragment;
 import com.gateway.lead_hunter.fragments.LeadFragment;
+import com.gateway.lead_hunter.objects.pojo.Lead;
+import com.gateway.lead_hunter.utils.DBManager;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +39,7 @@ public class EditLeadActivity extends AppCompatActivity
         GalleryFragment.OnFragmentInteractionListener {
 
     public static final String SHOW_ENTITY_ID = "SHOW_ENTITY_ID";
+    public static final String LEAD_ENTITY_ID = "LEAD_ENTITY_ID";
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -47,6 +55,10 @@ public class EditLeadActivity extends AppCompatActivity
      * The {@link ViewPager} that will host the section contents.
      */
 
+    private Long leadEntryId;
+    private String showEntryId;
+    private Lead lead;
+
     @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.container) ViewPager mViewPager;
     @BindView(R.id.tabs) TabLayout tabLayout;
@@ -56,6 +68,16 @@ public class EditLeadActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_lead);
         ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+        leadEntryId = intent.getLongExtra(LEAD_ENTITY_ID, 0);
+        showEntryId = intent.getStringExtra(SHOW_ENTITY_ID);
+
+        try {
+            lead = DBManager.getInstance().getLead(leadEntryId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         setToolbar();
         setTabs();
@@ -73,7 +95,7 @@ public class EditLeadActivity extends AppCompatActivity
 
     private void setTabs(){
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mSectionsPagerAdapter.addFrag(LeadFragment.newInstance("", ""), getString(R.string.tab_lead));
+        mSectionsPagerAdapter.addFrag(LeadFragment.newInstance(lead), getString(R.string.tab_lead));
         mSectionsPagerAdapter.addFrag(GalleryFragment.newInstance("", ""), getString(R.string.tab_photos));
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
@@ -105,6 +127,31 @@ public class EditLeadActivity extends AppCompatActivity
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onLeadUpdate(String firstName, String lastName, String company,
+                             String email, String phone) {
+
+        lead.setFirstName(firstName);
+        lead.setLastName(lastName);
+        lead.setCompany(company);
+        lead.setEmail(email);
+        lead.setPhone(phone);
+
+        try {
+            DBManager.getInstance().updateLead(lead, leadEntryId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Intent intent = new Intent(this, Leads.class);
+        intent.putExtra(Leads.SHOW_NAME, "Test");
+        intent.putExtra(Leads.SHOW_ENTRY_ID, showEntryId);
+        this.startActivity(intent);
 
     }
 

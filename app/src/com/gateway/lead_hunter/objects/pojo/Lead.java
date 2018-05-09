@@ -67,6 +67,17 @@ public class Lead {
         this.notes = notes;
     }
 
+    public Lead (String firstName, String lastName,
+                 String email, String company, String phone) {
+
+        this.showEntryId = showEntryId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.company = company;
+        this.email = email;
+        this.phone = phone;
+    }
+
     public Lead create(){
         setLocal(true);
         setLocallyCreated(true);

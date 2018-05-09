@@ -126,6 +126,24 @@ public class DBManager {
         return smartStore.query(QuerySpec.buildSmartQuerySpec(getAllRequest, PAGE_SIZE), 0);
     }
 
+    public Lead getLead(Long leadEntryId) throws JSONException, IOException {
+        QuerySpec queryLeadsByShow = QuerySpec.buildExactQuerySpec(LeadObject.LEAD_SOUP,
+                SmartStore.SOUP_ENTRY_ID,
+                leadEntryId.toString(),
+                null,
+                null,
+                1);
+
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
+        ObjectReader jsonReader = mapper.readerFor(Lead.class);
+        JSONArray res = smartStore.query(queryLeadsByShow, 0);
+
+        return (Lead) jsonReader.readValue(res.getJSONObject(0).toString());
+    }
+
     public Lead saveLead(Lead leadEntry) throws JSONException, IOException {
         mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
         mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
@@ -135,6 +153,17 @@ public class DBManager {
         JSONObject objectToSave = new JSONObject(mapper.valueToTree(leadEntry).toString());
         JSONObject savedObject = smartStore.create(LeadObject.LEAD_SOUP, objectToSave);
         return (Lead) jsonReader.readValue(savedObject.toString());
+    }
+
+    public Lead updateLead(Lead leadEntry, Long entryId) throws JSONException, IOException {
+        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        ObjectReader jsonReader = mapper.readerFor(Lead.class);
+
+        JSONObject objectToSave = new JSONObject(mapper.valueToTree(leadEntry).toString());
+        JSONObject updatedObject = smartStore.update(LeadObject.LEAD_SOUP, objectToSave, entryId);
+        return (Lead) jsonReader.readValue(updatedObject.toString());
     }
 
     public Lead createLead(String showEntryId, String firstName, String lastName,

@@ -69,6 +69,7 @@ public class NewLeadActivity extends AppCompatActivity {
                     notes.getText().toString());
 
             Intent intent = new Intent(view.getContext(), Leads.class);
+            intent.putExtra(Leads.SHOW_ENTRY_ID, showEntryId);
             view.getContext().startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

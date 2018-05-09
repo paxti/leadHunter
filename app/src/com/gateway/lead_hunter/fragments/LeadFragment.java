@@ -7,8 +7,21 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.gateway.lead_hunter.R;
+import com.gateway.lead_hunter.objects.pojo.Lead;
+
+import java.io.IOException;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,16 +32,21 @@ import com.gateway.lead_hunter.R;
  * create an instance of this fragment.
  */
 public class LeadFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String SELECTED_LEAD = "SELECTED_LEAD";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private Lead selectedLead;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    @BindView(R.id.update_button_form) Button updateLead;
+    @BindView(R.id.first_name_field) EditText firstName;
+    @BindView(R.id.last_name_field) EditText lastName;
+    @BindView(R.id.company_field) EditText company;
+    @BindView(R.id.email_field) EditText email;
+    @BindView(R.id.phone_field) EditText phone;
 
     public LeadFragment() {
         // Required empty public constructor
@@ -38,17 +56,22 @@ public class LeadFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param lead Lead from Activity.
      * @return A new instance of fragment LeadFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LeadFragment newInstance(String param1, String param2) {
+    public static LeadFragment newInstance(Lead lead) {
         LeadFragment fragment = new LeadFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            args.putSerializable(SELECTED_LEAD, mapper.writeValueAsString(lead));
+            fragment.setArguments(args);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
         return fragment;
     }
 
@@ -56,23 +79,30 @@ public class LeadFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                ObjectReader jsonReader = mapper.readerFor(Lead.class);
+                mapper.readerFor(Lead.class);
+                selectedLead = (Lead) jsonReader.readValue(getArguments().getString(SELECTED_LEAD));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_lead, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_lead, container, false);
+        ButterKnife.bind(this, view);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        firstName.setText(selectedLead.getFirstName());
+        lastName.setText(selectedLead.getLastName());
+        company.setText(selectedLead.getCompany());
+        email.setText(selectedLead.getEmail());
+        phone.setText(selectedLead.getPhone());
+
+        return view;
     }
 
     @Override
@@ -92,18 +122,26 @@ public class LeadFragment extends Fragment {
         mListener = null;
     }
 
+    @OnClick(R.id.update_button_form)
+    public void onClick() {
+
+        mListener.onLeadUpdate(
+                firstName.getText().toString(),
+                lastName.getText().toString(),
+                company.getText().toString(),
+                email.getText().toString(),
+                phone.getText().toString()
+        );
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onLeadUpdate(String firstName, String lastName, String company,
+                          String email, String phone);
     }
 }

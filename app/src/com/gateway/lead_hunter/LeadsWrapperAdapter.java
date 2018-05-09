@@ -64,8 +64,9 @@ public class LeadsWrapperAdapter extends RecyclerView.Adapter<LeadsWrapperAdapte
         @OnClick(R.id.cv)
         public void onClick() {
             Intent intent = new Intent(itemView.getContext(), EditLeadActivity.class);
-            String id = leads.get(getAdapterPosition()).getId();
-            intent.putExtra(EditLeadActivity.SHOW_ENTITY_ID, id);
+            Long id = leads.get(getAdapterPosition()).getEntyId();
+            intent.putExtra(EditLeadActivity.LEAD_ENTITY_ID, id);
+            intent.putExtra(EditLeadActivity.SHOW_ENTITY_ID, showEntryId);
             itemView.getContext().startActivity(intent);
         }
     }
