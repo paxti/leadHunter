@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.gateway.lead_hunter.fragments.GalleryFragment;
 import com.gateway.lead_hunter.fragments.LeadFragment;
+import com.gateway.lead_hunter.fragments.NotesFragment;
 import com.gateway.lead_hunter.objects.pojo.Lead;
 import com.gateway.lead_hunter.utils.DBManager;
 
@@ -36,7 +37,7 @@ import butterknife.ButterKnife;
 
 public class EditLeadActivity extends AppCompatActivity
         implements LeadFragment.OnFragmentInteractionListener,
-        GalleryFragment.OnFragmentInteractionListener {
+        GalleryFragment.OnFragmentInteractionListener, NotesFragment.OnFragmentInteractionListener {
 
     public static final String SHOW_ENTITY_ID = "SHOW_ENTITY_ID";
     public static final String LEAD_ENTITY_ID = "LEAD_ENTITY_ID";
@@ -96,7 +97,9 @@ public class EditLeadActivity extends AppCompatActivity
     private void setTabs(){
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mSectionsPagerAdapter.addFrag(LeadFragment.newInstance(lead), getString(R.string.tab_lead));
+        mSectionsPagerAdapter.addFrag(NotesFragment.newInstance(lead), getString(R.string.tab_notes));
         mSectionsPagerAdapter.addFrag(GalleryFragment.newInstance("", ""), getString(R.string.tab_photos));
+
 
         mViewPager.setAdapter(mSectionsPagerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
@@ -153,6 +156,24 @@ public class EditLeadActivity extends AppCompatActivity
         intent.putExtra(Leads.SHOW_ENTRY_ID, showEntryId);
         this.startActivity(intent);
 
+    }
+
+    @Override
+    public void onLeadNotesUpdate(String notes) {
+        lead.setNotes(notes);
+
+        try {
+            DBManager.getInstance().updateLead(lead, leadEntryId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Intent intent = new Intent(this, Leads.class);
+        intent.putExtra(Leads.SHOW_NAME, "Test");
+        intent.putExtra(Leads.SHOW_ENTRY_ID, showEntryId);
+        this.startActivity(intent);
     }
 
     /**

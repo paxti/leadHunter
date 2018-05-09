@@ -28,12 +28,18 @@
     <string name="form_phone">Phone</string>
     <string name="form_notes">Notes</string>
     <string name="form_save">Save</string>
+    <string name="form_update">Update</string>
     <string name="title_activity_edit_lead">EditLeadActivity</string>
 
     <string name="tab_lead">Lead</string>
     <string name="tab_photos">Photos</string>
+    <string name="tab_notes">Notes</string>
+
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="lead_fragment_placeholder">Lead view</string>
     <string name="gallery_fragment_placeholder">Gallery fragment</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
