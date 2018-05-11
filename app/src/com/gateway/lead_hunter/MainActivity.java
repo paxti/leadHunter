@@ -14,12 +14,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.gateway.lead_hunter.async.AsyncResponse;
+import com.gateway.lead_hunter.async.ShowLoader;
+import com.gateway.lead_hunter.objects.pojo.Show;
 import com.gateway.lead_hunter.services.ShowsSyncService;
 import com.gateway.lead_hunter.utils.DBManager;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,15 +82,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initializeAdapter(){
-        ShowsWrapperAdapter adapter = null;
+
         try {
+            ShowsWrapperAdapter adapter = new ShowsWrapperAdapter(null);
             adapter = new ShowsWrapperAdapter(DBManager.getInstance().getAllShows());
+            cardWrapper.setAdapter(adapter);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        cardWrapper.setAdapter(adapter);
     }
 
     @Override
