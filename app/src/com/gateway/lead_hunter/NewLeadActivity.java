@@ -11,12 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.gateway.lead_hunter.services.LeadsSyncService;
 import com.gateway.lead_hunter.utils.DBManager;
+import com.gateway.lead_hunter.utils.Utils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.internal.Utils;
 
 import static java.security.AccessController.getContext;
 
@@ -67,6 +68,11 @@ public class NewLeadActivity extends AppCompatActivity {
                     email.getText().toString(),
                     phone.getText().toString(),
                     notes.getText().toString());
+
+            if (Utils.isInternetAvailable(this)) {
+                Intent mServiceIntent = new Intent(this, LeadsSyncService.class);
+                this.startService(mServiceIntent);
+            }
 
             Intent intent = new Intent(view.getContext(), Leads.class);
             intent.putExtra(Leads.SHOW_ENTRY_ID, showEntryId);
