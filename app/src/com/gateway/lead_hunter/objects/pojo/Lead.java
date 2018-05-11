@@ -16,6 +16,9 @@ public class Lead {
     @JsonProperty(Constants.ID)
     private String id;
 
+    @JsonProperty(Constants.TYPE)
+    private String type;
+
     @JsonProperty(SmartStore.SOUP_ENTRY_ID)
     private Long entyId;
 
@@ -40,6 +43,9 @@ public class Lead {
     @JsonProperty(LeadObject.NOTES)
     private String notes;
 
+    @JsonProperty(LeadObject.ATTRIBUTES)
+    private Attribute attribute;
+
     @JsonProperty(ShowObject.LOCAL)
     private Boolean local;
 
@@ -58,6 +64,10 @@ public class Lead {
                  String email, String company, String phone,
                  String notes) {
 
+        Attribute aat = new Attribute();
+        aat.setType("Lead");
+
+        this.type = "Lead";
         this.showEntryId = showEntryId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,6 +75,11 @@ public class Lead {
         this.email = email;
         this.phone = phone;
         this.notes = notes;
+        this.local = true;
+        this.locallyCreated = true;
+        this.locallyUpdated = true;
+        this.locallyDeleted = false;
+        this.attribute = aat;
     }
 
     public Lead (String firstName, String lastName,
@@ -76,6 +91,9 @@ public class Lead {
         this.company = company;
         this.email = email;
         this.phone = phone;
+        this.locallyCreated = true;
+        this.locallyUpdated = true;
+        this.locallyDeleted = false;
     }
 
     public Lead create(){
@@ -98,6 +116,14 @@ public class Lead {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public Long getEntyId() {
@@ -186,5 +212,13 @@ public class Lead {
 
     public void setShowEntryId(String showEntryId) {
         this.showEntryId = showEntryId;
+    }
+
+    public Attribute getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(Attribute attribute) {
+        this.attribute = attribute;
     }
 }
