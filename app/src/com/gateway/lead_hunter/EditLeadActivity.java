@@ -24,7 +24,9 @@ import com.gateway.lead_hunter.fragments.GalleryFragment;
 import com.gateway.lead_hunter.fragments.LeadFragment;
 import com.gateway.lead_hunter.fragments.NotesFragment;
 import com.gateway.lead_hunter.objects.pojo.Lead;
+import com.gateway.lead_hunter.services.LeadsSyncService;
 import com.gateway.lead_hunter.utils.DBManager;
+import com.gateway.lead_hunter.utils.Utils;
 
 import org.json.JSONException;
 
@@ -149,6 +151,11 @@ public class EditLeadActivity extends AppCompatActivity
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+        if (Utils.isInternetAvailable(this)) {
+            Intent mServiceIntent = new Intent(this, LeadsSyncService.class);
+            this.startService(mServiceIntent);
         }
 
         Intent intent = new Intent(this, Leads.class);
