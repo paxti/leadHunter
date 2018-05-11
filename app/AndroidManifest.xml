@@ -33,8 +33,7 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
-        </activity>
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"></activity>
 
         <service android:name=".services.ShowsSyncService" />
 
@@ -121,7 +120,11 @@
         <activity
             android:name=".EditLeadActivity"
             android:label="@string/title_activity_edit_lead"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <service
+            android:name=".services.LeadsSyncService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
