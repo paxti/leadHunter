@@ -174,4 +174,8 @@ public class DBManager {
         return saveLead(newEntry);
     }
 
+    public Lead createLead(Lead lead) throws JSONException, IOException{
+        return saveLead(lead);
+    }
+
 }
